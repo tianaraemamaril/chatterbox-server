@@ -75,15 +75,15 @@ exports.requestHandler = function(request, response) {
         data.results.push(JSON.parse(result));
         response.end(JSON.stringify(data));
       });
-      // send back a get request
-      // send back specific data, potentially 
     }
-    // else {
-    //   response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
-    //   response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
-    // }
   }
   
+  if (request.method === 'OPTIONS') {
+    if (request.url === '/classes/messages') {
+      response.writeHead(statusCode, headers);
+      response.end('here are options');
+    }
+  }
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
