@@ -11,14 +11,14 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-var defaultCorsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
-  'access-control-max-age': 10 // Seconds.
-};
 
 exports.requestHandler = function(request, response) {
+  var defaultCorsHeaders = {
+    'access-control-allow-origin': '*',
+    'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'access-control-allow-headers': 'content-type, accept',
+    'access-control-max-age': 10 // Seconds.
+  };
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -41,6 +41,9 @@ exports.requestHandler = function(request, response) {
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
+  var data = {
+    results: []
+  };
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
@@ -51,12 +54,27 @@ exports.requestHandler = function(request, response) {
     if (request.url === '/classes/messages') {
       //send the data we have
       response.writeHead(statusCode, headers);
-      response.end('here is some data');
+      response.end(JSON.stringify(data));
     } else {
       response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
       response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
     }
   }
+
+
+  // if (request.method === 'POST') {
+  //   if (request.url === '/classes/messages') {
+  //     //send the data we have
+  //     response.writeHead(statusCode, headers);
+  //     response.end(data.results.push('hi'));
+  //     // send back a get request
+  //     // send back specific data, potentially 
+  //   }
+  //   // else {
+  //   //   response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
+  //   //   response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
+  //   // }
+  // }
   
 
   // .writeHead() writes to the request line and headers of the response,
