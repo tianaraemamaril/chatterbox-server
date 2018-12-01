@@ -62,19 +62,27 @@ exports.requestHandler = function(request, response) {
   }
 
 
-  // if (request.method === 'POST') {
-  //   if (request.url === '/classes/messages') {
-  //     //send the data we have
-  //     response.writeHead(statusCode, headers);
-  //     response.end(data.results.push('hi'));
-  //     // send back a get request
-  //     // send back specific data, potentially 
-  //   }
-  //   // else {
-  //   //   response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
-  //   //   response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
-  //   // }
-  // }
+  if (request.method === 'POST') {
+    if (request.url === '/classes/messages') {
+      var result;
+      //send the data we have
+      request.on('data', function(message) {
+        result = JSON.parse(message);
+        data.results.push(result);
+      });
+      
+      request.on('end', function() {
+        response.writeHead(201, headers);
+        response.end(JSON.stringify(data));
+      });
+      // send back a get request
+      // send back specific data, potentially 
+    }
+    // else {
+    //   response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
+    //   response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
+    // }
+  }
   
 
   // .writeHead() writes to the request line and headers of the response,
