@@ -12,7 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var data = {
-  results: []
+  results: [{}]
 };
 
 exports.requestHandler = function(request, response) {
@@ -51,13 +51,14 @@ exports.requestHandler = function(request, response) {
   headers['Content-Type'] = 'application/json';
 
   if (request.method === 'GET') {
-    if (request.url === '/classes/messages') {
+    console.log('inside get request');
+    if (request.url.split('?')[0] === '/classes/messages') {
       //send the data we have
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(data));
     } else {
-      response.writeHead(404, 'Not Found', {'Content-Type': 'text/html'});
-      response.end('<!doctype html><html><head><title>404</title></head><body>404: Not Found</body></html>');
+      response.writeHead(404, headers);
+      response.end();
     }
   }
 
@@ -79,10 +80,8 @@ exports.requestHandler = function(request, response) {
   }
   
   if (request.method === 'OPTIONS') {
-    if (request.url === '/classes/messages') {
-      response.writeHead(statusCode, headers);
-      response.end('here are options');
-    }
+    response.writeHead(200, headers);
+    response.end();
   }
 
   // .writeHead() writes to the request line and headers of the response,
