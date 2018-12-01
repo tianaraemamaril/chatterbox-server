@@ -11,6 +11,9 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+var data = {
+  results: []
+};
 
 exports.requestHandler = function(request, response) {
   var defaultCorsHeaders = {
@@ -41,9 +44,6 @@ exports.requestHandler = function(request, response) {
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
-  var data = {
-    results: []
-  };
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
@@ -64,15 +64,15 @@ exports.requestHandler = function(request, response) {
 
   if (request.method === 'POST') {
     if (request.url === '/classes/messages') {
-      var result;
+      var result = '';
       //send the data we have
       request.on('data', function(message) {
-        result = JSON.parse(message);
-        data.results.push(result);
+        result += message.toString();
       });
       
       request.on('end', function() {
         response.writeHead(201, headers);
+        data.results.push(JSON.parse(result));
         response.end(JSON.stringify(data));
       });
       // send back a get request
