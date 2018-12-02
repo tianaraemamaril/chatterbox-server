@@ -2,12 +2,14 @@ var Messages = {
 
 
   _data: {},
+  // objectId: 0,
 
   items: function() {
     return _.chain(Object.values(Messages._data)).sortBy('createdAt');
   },
 
   add: function(message, callback = ()=>{}) {
+    message.objectId = Object.keys(Messages._data).length;
     Messages._data[message.objectId] = message;
     callback(Messages.items());
   },
@@ -16,6 +18,7 @@ var Messages = {
     var length = Object.keys(Messages._data).length;
 
     for (let message of messages) {
+      message.objectId = messages.indexOf(message);
       Messages._data[message.objectId] = Messages._conform(message);
     }
 
@@ -30,6 +33,7 @@ var Messages = {
     message.text = message.text || '';
     message.username = message.username || '';
     message.roomname = message.roomname || '';
+    message.objectId = message.objectId;
     return message;
   }
   
