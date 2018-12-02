@@ -37,8 +37,8 @@ describe('server', function() {
     var requestParams = {method: 'POST',
       uri: 'http://127.0.0.1:3000/classes/messages',
       json: {
-        username: 'Jono',
-        text: 'Do my bidding!'}
+        username: 'Tessica&Jiana',
+        text: 'Do our bidding!'}
     };
 
     request(requestParams, function(error, response, body) {
@@ -51,8 +51,8 @@ describe('server', function() {
     var requestParams = {method: 'POST',
       uri: 'http://127.0.0.1:3000/classes/messages',
       json: {
-        username: 'Jono',
-        text: 'Do my bidding!'}
+        username: 'Tessica&Jiana',
+        text: 'Do our bidding!'}
     };
 
     request(requestParams, function(error, response, body) {
@@ -60,8 +60,8 @@ describe('server', function() {
       request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
         var messages = JSON.parse(body).results;
         // debugger;
-        expect(messages[0].username).to.equal('Jono');
-        expect(messages[0].text).to.equal('Do my bidding!');
+        expect(messages[0].username).to.equal('Tessica&Jiana');
+        expect(messages[0].text).to.equal('Do our bidding!');
         done();
       });
     });
@@ -74,5 +74,55 @@ describe('server', function() {
     });
   });
 
+
+  it('Should respond to OPTIONS requests from /classes/messages with a 200 status code', function(done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+    };
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
+
+  it('should 400 when receiving POST requests to anywhere but /classes/messages', function(done) {
+    var requestParams = {method: 'POST',
+      uri: 'http://127.0.0.1:3000',
+      json: {
+        username: 'Super Shepherd James',
+        text: 'To the rescue!'}
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(400);
+      done();
+    });
+  });
+
+  it('should accept DELETE requests to /classes/messages', function(done) {
+    var requestParams = {method: 'DELETE',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(200);
+      done();
+    });
+  });
+
+  it('should respond to DELETE requests with an empty results array', function(done) {
+    var requestParams = {method: 'DELETE',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+    };
+    request(requestParams, function(error, response, body) {
+      // Now if we request the log, that message we posted should be there:
+      request('http://127.0.0.1:3000/classes/messages', function(error, response, body) {
+        var messages = JSON.parse(body).results;
+        // debugger;
+        expect(messages.length).to.equal(0);
+        done();
+      });
+    });
+  });
 
 });

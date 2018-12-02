@@ -12,7 +12,9 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 var data = {
-  results: [{}]
+  results: [{
+    username: 'Tessica&Jiana',
+    text: 'Do our bidding!'}]
 };
 
 exports.requestHandler = function(request, response) {
@@ -76,12 +78,28 @@ exports.requestHandler = function(request, response) {
         data.results.push(JSON.parse(result));
         response.end(JSON.stringify(data));
       });
+    } else {
+      response.writeHead(400, headers);
+      response.end();
     }
   }
   
   if (request.method === 'OPTIONS') {
-    response.writeHead(200, headers);
-    response.end();
+    if (request.url.split('?')[0] === '/classes/messages') {
+      response.writeHead(200, headers);
+      response.end();
+    }
+  }
+
+  if (request.method === 'DELETE') {
+    if (request.url === '/classes/messages') {
+      response.writeHead(200, headers);
+      data.results = [];
+      response.end();
+    } else {
+      response.writeHead(400, 'headers');
+      response.end(JSON.stringify(data));
+    }
   }
 
   // .writeHead() writes to the request line and headers of the response,
